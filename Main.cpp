@@ -52,14 +52,14 @@ void learq(){
 		//Se contador > 11 eh CNPJ
 	    if(soun > 11){
 	    	for(int j = 0;j<=12;j++){
-	    		cnpjs[ctrlcnpjs][j] = ptleitura[j] - '0';		//Eu amo o Pier
+	    		cnpjs[ctrlcnpjs][j] = ptleitura[j] - '0';	
 			}
 			ctrlcnpjs++;			//Soma variavel de controle de cnpj
 		}
 		//Se nao eh CPF
 		else{
 	    	for(int j = 0;j<9;j++){
-	    		cpfs[ctrlcpfs][j] = ptleitura[j] - '0';			//Eu amo o Pier
+	    		cpfs[ctrlcpfs][j] = ptleitura[j] - '0';			
 	    		
 			}
 			

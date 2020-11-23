@@ -68,8 +68,8 @@ void learq(){
 }
 
 //Funcao de calculo de digitos verifcadores de CPFs
-//Parametros: (inicio, fim), representam o intervalo em que a funÁ„o calcula-r· os digitos verificadores
-//Necessario especificar o inicio e fim (intervalo) pois a utilizaÁ„o de mais de uma thread necessita tal organizacao
+//Parametros: (inicio, fim), representam o intervalo em que a fun√ß√£o calcula-r√° os digitos verificadores
+//Necessario especificar o inicio e fim (intervalo) pois a utiliza√ß√£o de mais de uma thread necessita tal organizacao
 void calccpf(int xi, int xend){
 
 	for(int j =xi; j<=xend;j++){
@@ -93,7 +93,7 @@ void calccpf(int xi, int xend){
 		}
 
 		//cout<< v1 <<".." <<v2 <<endl;
-		//AtribuiÁ„o dos digitos no respectivo cpf
+		//Atribui√ß√£o dos digitos no respectivo cpf
 		cpfs[j][9] = v1;
 		cpfs[j][10] = v2;
 	}
@@ -102,8 +102,8 @@ void calccpf(int xi, int xend){
 }
 
 //Funcao de calculo de digitos verifcadores de CNPJs
-//Parametros: (inicio, fim), representam o intervalo em que a funÁ„o calcula-r· os digitos verificadores
-//Necessario especificar o inicio e fim (intervalo) pois a utilizaÁ„o de mais de uma thread necessita tal organizacao
+//Parametros: (inicio, fim), representam o intervalo em que a fun√ß√£o calcula-r√° os digitos verificadores
+//Necessario especificar o inicio e fim (intervalo) pois a utiliza√ß√£o de mais de uma thread necessita tal organizacao
 void calccnpj(int xi, int xend){
 	//Variaveis auxiliares para o calculo dos digitos verificadores
 	int v1 = 0;
@@ -130,7 +130,7 @@ void calccnpj(int xi, int xend){
 		}
 			
 		//cout<< v1 <<".." <<v2 <<endl;
-		//AtribuiÁ„o dos digitos no respectivo cnpj
+		//Atribui√ß√£o dos digitos no respectivo cnpj
 		cnpjs[j][12] = v1;
 		cnpjs[j][13] = v2;
 	}
@@ -403,8 +403,15 @@ void prints(){
 	}
 	
 	//Printa e salva o tempo de execucao de leitura de dados e calculo de digitos
-	cout << "O tempo de excucao da leitura da base de dados foi de :"<< tmple.count() << " m/s"<<endl;
-	cout << "O tempo de excucao do calculo dos digitos foi de :"<< tmpclc.count() << " m/s"<<endl;
+	cout<<"Total de linhas lidas: "<< (ctrlcpfs+ctrlcnpjs) <<endl;
+	cout<<"Total de CPFs: "<< ctrlcpfs <<endl;
+	cout<<"Total de CNPJs: "<< ctrlcpfs <<endl;
+	cout << "O tempo de excucao da leitura da base de dados foi de: "<< tmple.count() << " m/s"<<endl;
+	cout << "O tempo de excucao do calculo dos digitos foi de: "<< tmpclc.count() << " m/s"<<endl;
+	
+	fprintf(sc,"Total de linhas lidas: %d",(ctrlcpfs+ctrlcnpjs));
+	fprintf(sc,"Total de CPFs: %d",ctrlcpfs);
+	fprintf(sc,"Total de CNPJs: %d",ctrlcnpjs);
 	fprintf(sc,"O tempo de excucao da leitura da base de dados foi de : %d m/s",tmple.count());
 	fprintf(sc,"O tempo de excucao do calculo dos digitos foi de : %d m/s",tmpclc.count());
 	
@@ -485,8 +492,15 @@ void printsSemPonto(){
 		
 		
 	//Printa e salva o tempo de execucao de leitura de dados e calculo de digitos
-	cout << "O tempo de excucao da leitura da base de dados foi de :"<< tmple.count() << " m/s"<<endl;
-	cout << "O tempo de excucao do calculo dos digitos foi de :"<< tmpclc.count() << " m/s"<<endl;
+	cout<<"Total de linhas lidas: "<< (ctrlcpfs+ctrlcnpjs) <<endl;
+	cout<<"Total de CPFs: "<< ctrlcpfs <<endl;
+	cout<<"Total de CNPJs: "<< ctrlcpfs <<endl;
+	cout << "O tempo de excucao da leitura da base de dados foi de: "<< tmple.count() << " m/s"<<endl;
+	cout << "O tempo de excucao do calculo dos digitos foi de: "<< tmpclc.count() << " m/s"<<endl;
+	
+	fprintf(sc,"Total de linhas lidas: %d",(ctrlcpfs+ctrlcnpjs));
+	fprintf(sc,"Total de CPFs: %d",ctrlcpfs);
+	fprintf(sc,"Total de CNPJs: %d",ctrlcnpjs);
 	fprintf(sc,"O tempo de excucao da leitura da base de dados foi de : %d m/s",tmple.count());
 	fprintf(sc,"O tempo de excucao do calculo dos digitos foi de : %d m/s",tmpclc.count());
 	
@@ -501,19 +515,19 @@ void orqs(){
 	auto start = std::chrono::steady_clock::now(); 					//Salva o tempo atual do clock
 	learq();														//Chamada da funcao de leitura de dados
 	auto end = steady_clock::now();									//Salva o tempo atual do clock
-	tmple = duration_cast<milliseconds>(end - start);	//Calculo da duraÁ„o da chamada da funcao learq() em millisegundos
+	tmple = duration_cast<milliseconds>(end - start);	//Calculo da dura√ß√£o da chamada da funcao learq() em millisegundos
 	
 	start = std::chrono::steady_clock::now();						//Salva o tempo atual do clock
 	fazcalcTh();													//Chamada da funcao que faz o calculo dos digitos COM thread
 	fazcalc();														//Chamada da funcao que faz o calculo dos digitos SEM thread
 	end = steady_clock::now();										//Salva o tempo atual do clock
-	tmpclc = duration_cast<milliseconds>(end - start);	//Calculo da duraÁ„o da chamada da funcao learq() em millisegundos
+	tmpclc = duration_cast<milliseconds>(end - start);	//Calculo da dura√ß√£o da chamada da funcao learq() em millisegundos
 	
 	start = std::chrono::steady_clock::now();						//Salva o tempo atual do clock
 	prints();														//Chamada da funcao de print e save do arquivo de log COM ponto
 	//printsSemPonto();												//Chamada da funcao de print e save do arquivo de log SEM ponto
 	end = steady_clock::now();										//Salva o tempo atual do clock
-	tmpprint = duration_cast<milliseconds>(end - start);//Calculo da duraÁ„o da chamada da funcao learq() em millisegundos
+	tmpprint = duration_cast<milliseconds>(end - start);//Calculo da dura√ß√£o da chamada da funcao learq() em millisegundos
 	
 	
 	//Print do tempo de execucao da chamada de print que salva os dados

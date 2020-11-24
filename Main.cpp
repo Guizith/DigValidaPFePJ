@@ -6,7 +6,19 @@
 #include <thread>
 #include<string>
 
-#define NUMLIN 10006060 			//Define o numero de linhas que serao lidas da base de dados
+
+/* Projeto de Sistemas Distribuidos FEI
+ * Professor: Ricardo Destro.
+ * Aluno: Guilherme Henrique Moreira
+ * 
+ * Este programa calcula os digitos verificadores de uma base de dados de
+ * CPFs e CNPJs
+ *
+ *
+ */
+ 
+    
+#define NUMLIN 100000 			//Define o numero de linhas que serao lidas da base de dados
 
 
 using namespace std;
@@ -26,11 +38,11 @@ milliseconds tmphalfcpf2;	//Variavel de armazenamento do tempo de execucao da th
 milliseconds tmphalfcnpj1;	//Variavel de armazenamento do tempo de execucao da thread halfcnpj1
 milliseconds tmphalfcnpj2;	//Variavel de armazenamento do tempo de execucao da thread halfcnpj2
 milliseconds tmpclc;		//Variavel de armazenamento do tempo de execucao da funcao de calculo dos digitos verificadores
-milliseconds tmpprint;		//Variavel de armazenamento do tempo de execucao da funcao de print e salvamento de arquivo de log
+milliseconds tmpprint;		//Variavel de armazenamento do tempo de execucao da funcao de print e gravacao de arquivo de log
 
 
 
-//Funcao de leitura do arquivo e armazenamento 
+//Funcao de leitura do arquivo e armazenamento
 void learq(){
 	
 	FILE* sc = fopen("BASE.txt", "r");			//Ponteiro para o arquivo BASE.txt em modo "Read"
@@ -62,11 +74,8 @@ void learq(){
 	    		cpfs[ctrlcpfs][j] = ptleitura[j] - '0';			
 	    		
 			}
-			
-			ctrlcpfs++;				//Soma variavel de controle de cpf
-			
+			ctrlcpfs++;				//Soma variavel de controle de cpf	
 		}
-
 	}
 	fclose(sc);		//Fecha o arquivo
 }
@@ -109,12 +118,15 @@ void calccpf(int xi, int xend){
 //Parametros: (inicio, fim), representam o intervalo em que a função calcula-rá os digitos verificadores
 //Necessario especificar o inicio e fim (intervalo) pois a utilização de mais de uma thread necessita tal organizacao
 void calccnpj(int xi, int xend){
-	//Variaveis auxiliares para o calculo dos digitos verificadores
-	int v1 = 0;
-	int v2 = 0;
+
 
 	//calculo dos digitos verificadores
 	for(int j = xi ; j<=xend;j++){
+		
+		//Variaveis auxiliares para o calculo dos digitos verificadores
+		int v1 = 0;
+		int v2 = 0;
+		
 		v1 = (6*cnpjs[j][0])+(7*cnpjs[j][1])+(8*cnpjs[j][2])+(9*cnpjs[j][3]);
 		v1 = v1 + ((2*cnpjs[j][4])+(3*cnpjs[j][5])+(4*cnpjs[j][6])+(5*cnpjs[j][7]));
 		v1 = v1 + ((6*cnpjs[j][8])+(7*cnpjs[j][9])+(8*cnpjs[j][10])+(9*cnpjs[j][11]));
@@ -174,13 +186,14 @@ void fazcalcTh(){
 }
 
 //Funcao para fazer os calculos dos digitos verifcadores dos CPFs e CNPJs sem a utilizacao de threads
-void fazcalc(){
-	
-	//calccpf(0,ctrlcpfs);		//Calcula todos os digitos de CPFs
-	//calccnpj(0,ctrlcnpjs);	//Calcula todos os digitos de CNPJs
+void fazcalc(){	
+	calccpf(0,ctrlcpfs);		//Calcula todos os digitos de CPFs
+	calccnpj(0,ctrlcnpjs);	//Calcula todos os digitos de CNPJs
 }
 
 //Funcao para printar na tela e salvar o arquivo log.txt com ponto
+//CPF   XXX.XXX.XXX-XX
+//CNPJ  XX.XXX.XXX/XXXX-XX
 void prints(){
 	
 	//Print de menu de escolha (salvar e mostrar na tela ou apenas salvar)
@@ -443,6 +456,8 @@ void prints(){
 }
 
 //Funcao para printar na tela e salvar o arquivo log.txt sem ponto
+//CPF   XXXXXXXXXXX
+//CNPJ  XXXXXXXXXXXXXX
 void printsSemPonto(){
 	
 	//Print de menu de escolha (salvar e mostrar na tela ou apenas salvar)
@@ -497,7 +512,7 @@ void printsSemPonto(){
 			for(int j = 0; j <=10;j++){	
 					fprintf(sc,"%d",cpfs[i][j]);
 				}
-			fprintf(sc,"...\n");
+			fprintf(sc,"\n");
 			}	
 		}
 		
@@ -535,9 +550,7 @@ void printsSemPonto(){
 	fprintf(sc,"O tempo de excucao do calculo dos digitos na Thread halfcnpj1 foi de: %d m/s \n", tmphalfcnpj1.count());
 	fprintf(sc,"O tempo de excucao do calculo dos digitos na Thread halfcnpj2 foi de: %d m/s \n", tmphalfcnpj2.count());	
 	fprintf(sc,"O tempo de excucao do calculo dos digitos foi de : %d m/s \n",tmpclc.count());
-	
-	
-	
+
 	//Fecha arquivo
 	fclose(sc);		
 }
@@ -549,20 +562,21 @@ void orqs(){
 	auto start = std::chrono::steady_clock::now(); 					//Salva o tempo atual do clock
 	learq();														//Chamada da funcao de leitura de dados
 	auto end = steady_clock::now();									//Salva o tempo atual do clock
-	tmple = duration_cast<milliseconds>(end - start);	//Calculo da duração da chamada da funcao learq() em millisegundos
+	tmple = duration_cast<milliseconds>(end - start);				//Calculo da duração da chamada da funcao learq() em millisegundos
 	
+	//Chamada do calculo
 	start = std::chrono::steady_clock::now();						//Salva o tempo atual do clock
 	fazcalcTh();													//Chamada da funcao que faz o calculo dos digitos COM thread
-	fazcalc();														//Chamada da funcao que faz o calculo dos digitos SEM thread
+	//fazcalc();													//Chamada da funcao que faz o calculo dos digitos SEM thread
 	end = steady_clock::now();										//Salva o tempo atual do clock
-	tmpclc = duration_cast<milliseconds>(end - start);	//Calculo da duração da chamada da funcao learq() em millisegundos
+	tmpclc = duration_cast<milliseconds>(end - start);				//Calculo da duração da chamada da funcao fazcalcTh() em millisegundos
 	
+	//Chamada print e save do arquivo de log
 	start = std::chrono::steady_clock::now();						//Salva o tempo atual do clock
 	prints();														//Chamada da funcao de print e save do arquivo de log COM ponto
 	//printsSemPonto();												//Chamada da funcao de print e save do arquivo de log SEM ponto
 	end = steady_clock::now();										//Salva o tempo atual do clock
-	tmpprint = duration_cast<milliseconds>(end - start);//Calculo da duração da chamada da funcao learq() em millisegundos
-	
+	tmpprint = duration_cast<milliseconds>(end - start);			//Calculo da duração da chamada da funcao prints() em millisegundos
 	
 	//Print do tempo de execucao da chamada de print que salva os dados
 	//Este dado nao eh impresso no arquivo de log, pois o mesmo mostra o tempo que demorou para salvar os dados no arquivo
